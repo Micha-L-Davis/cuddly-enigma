@@ -21,28 +21,34 @@ function renderCart() {
 // TODO: Remove all of the rows (tr) in the cart table (tbody)
 function clearCart() {
   let tbody = document.querySelector('#cart tbody');
- while (tbody.firstChild) {
-   tbody.removeChild(tbody.firstChild);
- }
+  while (tbody.firstChild) {
+    tbody.removeChild(tbody.firstChild);
+  }
 }
 
+let tbody;
 // TODO: Fill in the <tr>'s under the <tbody> for each item in the cart
 function showCart() {
-  let tbody = document.querySelector('#cart tbody');
+  tbody = document.querySelector('#cart tbody');
 
   // TODO: Find the table body
-  for (let i in cart) {
+  for (let i in cart.items) {
+    console.log('i is ' + i);
     let trElement = document.createElement('tr');
     let deleteElement = document.createElement('td');
     let qtyElement = document.createElement('td'); 
     let itemElement = document.createElement('td');
     tbody.appendChild(trElement);
-    trElement.appendChild(deleteElement);
-    trElement.appendChild(qtyElement);
     trElement.appendChild(itemElement);
+    trElement.appendChild(qtyElement);
+    trElement.appendChild(deleteElement);
+
+
     deleteElement.textContent = 'X';
-    qtyElement.textContent = i.quantity;
-    itemElement.textContent = i.product;
+    deleteElement.classList.add('delete');
+    deleteElement.id = i;
+    qtyElement.textContent = cart.items[i].quantity;
+    itemElement.textContent = cart.items[i].product;
   }
   // TODO: Iterate over the items in the cart
   // TODO: Create a TR
@@ -52,14 +58,18 @@ function showCart() {
 }
 
 function removeItemFromCart(event) {
- if (event.target.innerText === 'X') {
-  event.target.parentElement.remove();
+ if (event.target.classList.contains('delete')) {
+    cart.removeItem(parseInt(event.target.id));
+    // event.target.parentElement.remove();
+    console.log(event);
+    let item = event.target.parentElement.firstChild.textContent;
+    // TODO: When a delete link is clicked, use cart.removeItem to remove the correct item
+    cart.removeItem(item);
+    // TODO: Save the cart back to local storage
+    cart.saveToLocalStorage();
+    // TODO: Re-draw the cart table
+    renderCart();
  }
-  console.log(event.target.parentElement);
-  // TODO: When a delete link is clicked, use cart.removeItem to remove the correct item
-  // TODO: Save the cart back to local storage
-  // TODO: Re-draw the cart table
-
 }
 
 // This will initialize the page and draw the cart on screen
